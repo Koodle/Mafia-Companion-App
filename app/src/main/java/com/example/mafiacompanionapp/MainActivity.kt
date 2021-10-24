@@ -3,16 +3,20 @@ package com.example.mafiacompanionapp
 import android.content.Context
 import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import java.net.ServerSocket
 
 class MainActivity : AppCompatActivity() {
 
     var mlocalPort = -1
-    var mServiceName = "noNameSet"
-
+    var mServiceName = "" //get from bluetooth and append to end
+    var mServiceType = "_mafia._tcp"
+    var nsdManager: NsdManager? = null
+    var TAG = "tag"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,12 +24,11 @@ class MainActivity : AppCompatActivity() {
 
         initializeServerSocket()
 
-        Log.d("TAG", mlocalPort.toString())
-
+        Log.d(TAG, "mlocalPort $mlocalPort")
 
         registerService(mlocalPort)
 
-
+        nsdManager?.discoverServices(mServiceType, NsdManager.PROTOCOL_DNS_SD, discoveryListener)
 
     }
 
@@ -45,14 +48,15 @@ class MainActivity : AppCompatActivity() {
         val serviceInfo = NsdServiceInfo().apply {
             // The name is subject to change based on conflicts
             // with other services advertised on the same network.
-            serviceName = "getbluetoothname"
+            serviceName = Build.MANUFACTURER + " - " + Build.MODEL //todo get the name of the device from bluetooth
             serviceType = "_mafia._tcp"
             setPort(port)
         }
 
-        val nsdManager = (getSystemService(Context.NSD_SERVICE) as NsdManager).apply {
+        nsdManager = (getSystemService(Context.NSD_SERVICE) as NsdManager).apply {
             registerService(serviceInfo, NsdManager.PROTOCOL_DNS_SD, registrationListener)
         }
+
     }
 
     private val registrationListener = object : NsdManager.RegistrationListener {
@@ -60,9 +64,13 @@ class MainActivity : AppCompatActivity() {
         override fun onServiceRegistered(NsdServiceInfo: NsdServiceInfo) {
             // Save the service name. Android may have changed it in order to
             // resolve a conflict, so update the name you initially requested
-            // with the name Android actually used.
+            // with the name Android actually used
             mServiceName = NsdServiceInfo.serviceName
-            Log.d("TAG", mServiceName)
+            //mServiceType = NsdServiceInfo.serviceType
+            Log.d("TAG", "service name $mServiceName" )
+            Log.d("TAG", "service type $mServiceType")
+            Log.d("TAG", "port ${NsdServiceInfo.port}")
+            Log.d("TAG", "port ${NsdServiceInfo.host}")
         }
 
         override fun onRegistrationFailed(serviceInfo: NsdServiceInfo, errorCode: Int) {
@@ -78,4 +86,51 @@ class MainActivity : AppCompatActivity() {
             // Unregistration failed. Put debugging code here to determine why.
         }
     }
+
+    // Instantiate a new DiscoveryListener
+    private val discoveryListener = object : NsdManager.DiscoveryListener {
+
+        // Called as soon as service discovery begins.
+        override fun onDiscoveryStarted(regType: String) {
+            Log.d(TAG, "Service discovery started")
+        }
+
+        override fun onServiceFound(service: NsdServiceInfo) {
+            // A service was found! Do something with it.
+            Log.d(TAG, "Service discovery success$service")
+            when {
+                service.serviceType != mServiceType -> // Service type is the string containing the protocol and
+                    // transport layer for this service.
+                    Log.d(TAG, "Unknown Service Type: ${service.serviceType}")
+                service.serviceName == mServiceName -> // The name of the service tells the user what they'd be
+                    // connecting to. It could be "Bob's Chat App".
+                    Log.d(TAG, "Same machine: $mServiceName")
+                service.serviceType.contains("mafia") ->  //todo gonna change from service name to type
+                    Log.d(TAG, "broadcastedservicename = $service.serviceName")
+                    //nsdManager.resolveService(service, resolveListener)
+            }
+        }
+
+        override fun onServiceLost(service: NsdServiceInfo) {
+            // When the network service is no longer available.
+            // Internal bookkeeping code goes here.
+            Log.e(TAG, "service lost: $service")
+        }
+
+        override fun onDiscoveryStopped(serviceType: String) {
+            Log.i(TAG, "Discovery stopped: $serviceType")
+        }
+
+        override fun onStartDiscoveryFailed(serviceType: String, errorCode: Int) {
+            Log.e(TAG, "Discovery failed: Error code:$errorCode")
+            nsdManager?.stopServiceDiscovery(this)
+        }
+
+        override fun onStopDiscoveryFailed(serviceType: String, errorCode: Int) {
+            Log.e(TAG, "Discovery failed: Error code:$errorCode")
+            nsdManager?.stopServiceDiscovery(this)
+        }
+    }
+
+
 }
