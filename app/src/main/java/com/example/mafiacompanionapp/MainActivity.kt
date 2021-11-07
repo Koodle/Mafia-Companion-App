@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
+import java.net.InetAddress
 import java.net.ServerSocket
 
 class MainActivity : AppCompatActivity() {
@@ -18,14 +19,15 @@ class MainActivity : AppCompatActivity() {
     var nsdManager: NsdManager? = null
     var TAG = "tag"
 
+    var mService: NsdServiceInfo? = null
+    var port: Int? = null
+    var host: InetAddress? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         initializeServerSocket()
-
-        Log.d(TAG, "mlocalPort $mlocalPort")
-
         registerService(mlocalPort)
 
         nsdManager?.discoverServices(mServiceType, NsdManager.PROTOCOL_DNS_SD, discoveryListener)
@@ -98,6 +100,31 @@ class MainActivity : AppCompatActivity() {
         override fun onServiceFound(service: NsdServiceInfo) {
             // A service was found! Do something with it.
             Log.d(TAG, "Service discovery success$service")
+            nsdManager?.resolveService(service, object : NsdManager.ResolveListener {
+                override fun onResolveFailed(serviceInfo: NsdServiceInfo?, errorCode: Int) {
+                    // Called when the resolve fails. Use the error code to debug.
+                    Log.e(TAG, "Resolve failed: $errorCode")
+                }
+
+                override fun onServiceResolved(serviceInfo: NsdServiceInfo?) {
+                    Log.e(TAG, "Resolve Succeeded. $serviceInfo")
+
+                    if (serviceInfo != null) {
+                        if (serviceInfo.serviceName == mServiceName) {
+                            Log.d(TAG, "Same IP.")
+                            return
+                        }
+                    }
+                    mService = serviceInfo
+                    if (serviceInfo != null) {
+                        port = serviceInfo.port
+                    }
+                    if (serviceInfo != null) {
+                        host = serviceInfo.host
+                    }
+                }
+
+            })
             when {
                 service.serviceType != mServiceType -> // Service type is the string containing the protocol and
                     // transport layer for this service.
@@ -107,7 +134,7 @@ class MainActivity : AppCompatActivity() {
                     Log.d(TAG, "Same machine: $mServiceName")
                 service.serviceType.contains("mafia") ->  //todo gonna change from service name to type
                     Log.d(TAG, "broadcastedservicename = $service.serviceName")
-                    //nsdManager.resolveService(service, resolveListener)
+
             }
         }
 
@@ -131,6 +158,56 @@ class MainActivity : AppCompatActivity() {
             nsdManager?.stopServiceDiscovery(this)
         }
     }
+
+    private val resolveListener = object : NsdManager.ResolveListener {
+
+        override fun onResolveFailed(serviceInfo: NsdServiceInfo, errorCode: Int) {
+            // Called when the resolve fails. Use the error code to debug.
+            Log.e(TAG, "Resolve failed: $errorCode")
+        }
+
+        override fun onServiceResolved(serviceInfo: NsdServiceInfo) {
+            Log.e(TAG, "Resolve Succeeded. $serviceInfo")
+
+            if (serviceInfo.serviceName == mServiceName) {
+                Log.d(TAG, "Same IP.")
+                return
+            }
+            mService = serviceInfo
+            port = serviceInfo.port
+            host = serviceInfo.host
+        }
+    }
+
+
+    //In your application's Activity
+
+    override fun onPause() {
+        tearDown()
+        super.onPause()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        registerService(mlocalPort)
+        nsdManager?.discoverServices(mServiceType, NsdManager.PROTOCOL_DNS_SD, discoveryListener)
+
+    }
+
+    override fun onDestroy() {
+        tearDown()
+        //connection.tearDown() todo idk how to implement... maybe means to disable socket/close port
+        super.onDestroy()
+    }
+
+    // NsdHelper's tearDown method
+    fun tearDown() {
+        nsdManager?.apply {
+            unregisterService(registrationListener)
+            stopServiceDiscovery(discoveryListener)
+        }
+    }
+
 
 
 }
