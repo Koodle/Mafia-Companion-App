@@ -7,6 +7,12 @@
     tools:context=".MainActivity"
     android:orientation="vertical">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Mafia Party Game"
+        android:textAlignment="center"/>
+
     <Button
         android:id="@+id/btnHost"
         android:layout_width="wrap_content"

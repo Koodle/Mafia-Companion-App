@@ -27,8 +27,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        initializeServerSocket()
-        registerService(mlocalPort)
+//        initializeServerSocket()
+//        registerService(mlocalPort)
 
         nsdManager?.discoverServices(mServiceType, NsdManager.PROTOCOL_DNS_SD, discoveryListener)
 
