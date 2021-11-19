@@ -26,5 +26,4 @@ class ClientActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
-
 }

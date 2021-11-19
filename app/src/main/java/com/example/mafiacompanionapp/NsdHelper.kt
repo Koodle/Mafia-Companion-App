@@ -104,8 +104,6 @@ class NsdHelper {
 
     //Discover Services
 
-
-
     fun discoverServices(){
 
         nsdManager = (mContext?.getSystemService(Context.NSD_SERVICE) as NsdManager)
