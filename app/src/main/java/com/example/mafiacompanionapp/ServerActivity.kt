@@ -13,6 +13,8 @@ class ServerActivity : AppCompatActivity() {
 
         nsdHelper.registerService(nsdHelper.initializeServerSocket())
 
+
+
     }
 
 

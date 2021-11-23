@@ -17,7 +17,7 @@ class MainActivity : AppCompatActivity() {
         var btnFind = findViewById(R.id.btnFind) as Button
         btnHost.setOnClickListener {
 
-            var intent = Intent(this@MainActivity, ServerActivity::class.java)
+            var intent = Intent(this@MainActivity, HostLobbyActivity::class.java)
             startActivity(intent)
 
         }
