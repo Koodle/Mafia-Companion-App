@@ -3,6 +3,11 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Kazim/AndroidStudioProjects/MafiaCompanionApp/app/src/main/res/drawable/lobby_recyclerview_row.xml" value="0.21614583333333334" />
+        <entry key="..\:/Users/Kazim/AndroidStudioProjects/MafiaCompanionApp/app/src/main/res/layout/activity_host_lobby.xml" value="0.15081521739130435" />
+        <entry key="..\:/Users/Kazim/AndroidStudioProjects/MafiaCompanionApp/app/src/main/res/layout/activity_main.xml" value="0.15081521739130435" />
+        <entry key="..\:/Users/Kazim/AndroidStudioProjects/MafiaCompanionApp/app/src/main/res/layout/activity_server.xml" value="0.22" />
+        <entry key="..\:/Users/Kazim/AndroidStudioProjects/MafiaCompanionApp/app/src/main/res/layout/lobby_recyclerview_row.xml" value="0.2" />
         <entry key="..\:/Users/kazim/AndroidStudioProjects/Mafia-Companion-App/app/src/main/res/drawable/custom_button.xml" value="0.5703125" />
         <entry key="..\:/Users/kazim/AndroidStudioProjects/Mafia-Companion-App/app/src/main/res/drawable/gradient_background.xml" value="0.5703125" />
         <entry key="..\:/Users/kazim/AndroidStudioProjects/Mafia-Companion-App/app/src/main/res/drawable/triangle.xml" value="0.5703125" />
