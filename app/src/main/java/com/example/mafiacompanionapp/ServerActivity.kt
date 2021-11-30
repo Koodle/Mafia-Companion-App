@@ -1,17 +1,42 @@
 package com.example.mafiacompanionapp
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import android.widget.EditText
 
 class ServerActivity : AppCompatActivity() {
 
+
     var nsdHelper: NsdHelper = NsdHelper(this)
+    var serverName: String? = null
+
+    //var serverName: String? = getIntent().getStringExtra("serverName")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_server)
+        Log.d("debug - ServerActivity", "server activity")
 
+        //get the serverName from HostLobbyIntent
+        val extras = getIntent().getExtras()
+        if (null != extras) {
+            val value = extras.getString("serverName")
+            Log.d("debug - ServerActivity", "found extra")
+
+            //set serviceName to be server Name
+            serverName = value.toString()
+
+        }else{
+            Log.d("debug - ServerActivity", "no extras")
+        }
+
+        //set ServerName for NSD
+        nsdHelper.setServiceName(serverName.toString())
+        //Allocate Socket & Register Service
         nsdHelper.registerService(nsdHelper.initializeServerSocket())
+
 
 
 

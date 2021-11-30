@@ -7,18 +7,6 @@
     tools:context=".ServerActivity"
     android:orientation="vertical">
 
-    <EditText
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:hint="Name"
-        />
-
-    <Button
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:text="Create Game"/>
-
-
 
 
 

@@ -1,13 +1,13 @@
 package com.example.mafiacompanionapp
 
+import android.net.nsd.NsdServiceInfo
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class lobbyAdapter(private val mList: List<ItemsViewModel>) : RecyclerView.Adapter<lobbyAdapter.ViewHolder>() {
+class lobbyAdapter(private val mList: List<NsdServiceInfo>) : RecyclerView.Adapter<lobbyAdapter.ViewHolder>() {
 
     // create new views
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -22,13 +22,13 @@ class lobbyAdapter(private val mList: List<ItemsViewModel>) : RecyclerView.Adapt
     // binds the list items to a view
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        val ItemsViewModel = mList[position]
+        val lobby = mList[position]
 
         // sets the image to the imageview from our itemHolder class
-        holder.imageView.setImageResource(ItemsViewModel.image)
+//        holder.imageView.setImageResource(ItemsViewModel.image)
 
         // sets the text to the textview from our itemHolder class
-        holder.textView.text = ItemsViewModel.text
+        holder.textView.text = lobby.serviceName
 
     }
 
@@ -39,7 +39,7 @@ class lobbyAdapter(private val mList: List<ItemsViewModel>) : RecyclerView.Adapt
 
     // Holds the views for adding it to image and text
     class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) {
-        val imageView: ImageView = itemView.findViewById(R.id.imageview)
-        val textView: TextView = itemView.findViewById(R.id.textView)
+        //val imageView: ImageView = itemView.findViewById(R.id.imageview)
+        val textView: TextView = itemView.findViewById(R.id.lobbyName)
     }
 }

@@ -1,5 +1,6 @@
 package com.example.mafiacompanionapp
 
+import android.app.Service
 import android.content.Context
 import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
@@ -11,40 +12,37 @@ import java.net.ServerSocket
 
 /*class that contains all the code to implement NSD*/
 
-class NsdHelper {
+class NsdHelper(var mContext: Context) {
 
-    var mContext: Context? = null
+    //Register Service vars
+    private var localPort = -1
+    private var mServiceName = "MafiaApp - " + Build.MANUFACTURER + " - " + Build.MODEL //todo could get the user to imput their name here or do it in the sockets
+    private var mServiceType = "_mafia._tcp"
+    private var nsdManager: NsdManager? = null
+    private var TAG = "LOG: NsdHelper"
+    private var registrationListener: NsdManager.RegistrationListener? = null
 
-    //Register Service
-    var localPort = -1
-    var mServiceName = "MafiaApp - " + Build.MANUFACTURER + " - " + Build.MODEL //todo could get the user to imput their name here or do it in the sockets
-    var mServiceType = "_mafia._tcp"
-    var nsdManager: NsdManager? = null
-    var TAG = "LOG: "
-    var registrationListener: NsdManager.RegistrationListener? = null
-
-    //Discover Service
-    var mService: NsdServiceInfo? = null
-    var port: Int? = null
-    var host: InetAddress? = null
+    //Discover Service vars
+    private var mService: NsdServiceInfo? = null
+    private var port: Int? = null
+    private var host: InetAddress? = null
+    //public because it needs to be dynamic for the recycler view
+    var servicesList: MutableList<NsdServiceInfo> = mutableListOf() //list of devices
 
 
-    constructor(context: Context){
-        this.mContext = context
-    }
-
+    //Register Service meths
     fun initializeServerSocket(): Int {
         //initialize a server socket on the next available port
         var mServerSocket = ServerSocket(0)
         //store the chosen port
         localPort = mServerSocket.localPort
-
         return localPort
     }
 
     //Note that this method is asynchronous,
     // so any code that needs to run after the service has been registered
     // must go in the onServiceRegistered() method.
+
     fun registerService(port: Int) {
         // Create the NsdServiceInfo object, and populate it.
         val serviceInfo = NsdServiceInfo().apply {
@@ -92,18 +90,23 @@ class NsdHelper {
 
     }
 
+    //gives the name inputted by the user. used in the lobby(server) name
+    fun setServiceName(name: String){
+        mServiceName = name
+    }
+
     fun tearDown() {
         if(registrationListener != null){
             try {
                 nsdManager?.unregisterService(registrationListener)
+                Log.e(TAG, mServiceName + " service is unregisterd")
             }finally {
                 registrationListener = null
             }
         }
     }
 
-    //Discover Services
-
+    //Discover Services meths
     fun discoverServices(){
 
         nsdManager = (mContext?.getSystemService(Context.NSD_SERVICE) as NsdManager)
@@ -121,8 +124,10 @@ class NsdHelper {
 
         override fun onServiceFound(service: NsdServiceInfo) {
             // A service was found! Do something with it.
-            Log.d(TAG, "Service discovery success$service")
+            Log.d(TAG, "Service discovery success $service")
+
             nsdManager?.resolveService(service, object : NsdManager.ResolveListener {
+
                 override fun onResolveFailed(serviceInfo: NsdServiceInfo?, errorCode: Int) {
                     // Called when the resolve fails. Use the error code to debug.
                     Log.e(TAG, "Resolve failed: $errorCode")
@@ -131,39 +136,54 @@ class NsdHelper {
                 override fun onServiceResolved(serviceInfo: NsdServiceInfo?) {
                     Log.e(TAG, "Resolve Succeeded. $serviceInfo")
 
+//                    if (serviceInfo != null) {
+//                        if (serviceInfo.serviceName == mServiceName) {
+//                            Log.d(TAG, "Same IP.")
+//                            return
+//                        }
+//                    }
+//                    mService = serviceInfo
+//                    if (serviceInfo != null) {
+//                        port = serviceInfo.port
+//                    }
+//                    if (serviceInfo != null) {
+//                        host = serviceInfo.host
+//                    }
+
+
+
                     if (serviceInfo != null) {
-                        if (serviceInfo.serviceName == mServiceName) {
-                            Log.d(TAG, "Same IP.")
-                            return
+
+                        //make sure the device is not finding its self
+                        if (serviceInfo.serviceName.equals(mServiceName)) {  //this should never happen since a device shouldnt be able to host and find at the same time
+                            Log.e(TAG, "found yourself")
+
+                        }else if(serviceInfo.serviceType.contains("mafia._tcp")){
+
+                            Log.d(TAG, "broadcastedservicename = $service.serviceName")
+
+                            //todo should i use a setter method instead?
+                            servicesList.add(    //store the service in the list
+                                service
+                            )
                         }
                     }
-                    mService = serviceInfo
-                    if (serviceInfo != null) {
-                        port = serviceInfo.port
-                    }
-                    if (serviceInfo != null) {
-                        host = serviceInfo.host
-                    }
+
+
+
+
                 }
 
             })
-            when {
-                service.serviceType != mServiceType -> // Service type is the string containing the protocol and
-                    // transport layer for this service.
-                    Log.d(TAG, "Unknown Service Type: ${service.serviceType}")
-                service.serviceName == mServiceName -> // The name of the service tells the user what they'd be
-                    // connecting to. It could be "Bob's Chat App".
-                    Log.d(TAG, "Same machine: $mServiceName")
-                service.serviceType.contains("mafia") ->  //todo gonna change from service name to type
-                    Log.d(TAG, "broadcastedservicename = $service.serviceName")
 
-            }
         }
 
         override fun onServiceLost(service: NsdServiceInfo) {
             // When the network service is no longer available.
             // Internal bookkeeping code goes here.
             Log.e(TAG, "service lost: $service")
+            servicesList.remove(service)
+            Log.e(TAG, "service removed from mutable serviceList")
         }
 
         override fun onDiscoveryStopped(serviceType: String) {
@@ -180,6 +200,12 @@ class NsdHelper {
             nsdManager?.stopServiceDiscovery(this)
         }
     }
+
+
+    fun getServices(): MutableList<NsdServiceInfo>{
+        return servicesList
+    }
+
 
     fun stopDiscovery() {
         if (discoveryListener != null) {

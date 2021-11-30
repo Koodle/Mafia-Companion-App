@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity() {
 
         btnFind.setOnClickListener {
 
-            var intent = Intent(this@MainActivity, ClientActivity::class.java)
+            var intent = Intent(this@MainActivity, FindLobbyActivity::class.java)
             startActivity(intent)
 
         }
