@@ -204,6 +204,9 @@ class NsdHelper(var mContext: Context) {
             //remove service from list
             for(i in servicesList.indices){
                 if (servicesList[i].serviceName.equals(service.serviceName)){
+                    //do not recreate the list or the adapter will not be able to find it using its reference in memory.
+                    //we do operations on the existing list since if we were to recreate the list then its reference in memory will change.
+                    //That will cause the adapter to get confused since the list that it was initialized with will no longer exist in memory
                     servicesList.removeAt(i)
                 }
             }

@@ -41,12 +41,15 @@ class lobbyAdapter(private var mList: List<NsdServiceInfo>) : RecyclerView.Adapt
 
     //update the adapter when changes are made to the original list
     fun update(){
+        //allows us to make changes to the main threads UI.
+        //looper gets the Main thread (the thread with the ui on it)
+        //runnable allows us to interact with the main threads ui whilst on another thread.
+        //notifyDataSetChanged() will cause the adapter to refresh what it is displaying. It will look up the list that is was initialized with (using the lists reference in memory)
         Handler(Looper.getMainLooper()).post(Runnable { this.notifyDataSetChanged() })
     }
 
     // Holds the views for adding it to image and text
     class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) {
-        //val imageView: ImageView = itemView.findViewById(R.id.imageview)
         val textView: TextView = itemView.findViewById(R.id.lobbyName)
     }
 }
