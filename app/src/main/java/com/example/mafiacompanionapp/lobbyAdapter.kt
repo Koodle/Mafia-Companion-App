@@ -1,13 +1,18 @@
 package com.example.mafiacompanionapp
 
 import android.net.nsd.NsdServiceInfo
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import android.os.Looper
+import android.util.Log
 
-class lobbyAdapter(private val mList: List<NsdServiceInfo>) : RecyclerView.Adapter<lobbyAdapter.ViewHolder>() {
+
+class lobbyAdapter(private var mList: List<NsdServiceInfo>) : RecyclerView.Adapter<lobbyAdapter.ViewHolder>() {
+
 
     // create new views
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -24,9 +29,6 @@ class lobbyAdapter(private val mList: List<NsdServiceInfo>) : RecyclerView.Adapt
 
         val lobby = mList[position]
 
-        // sets the image to the imageview from our itemHolder class
-//        holder.imageView.setImageResource(ItemsViewModel.image)
-
         // sets the text to the textview from our itemHolder class
         holder.textView.text = lobby.serviceName
 
@@ -35,6 +37,11 @@ class lobbyAdapter(private val mList: List<NsdServiceInfo>) : RecyclerView.Adapt
     // return the number of the items in the list
     override fun getItemCount(): Int {
         return mList.size
+    }
+
+    //update the adapter when changes are made to the original list
+    fun update(){
+        Handler(Looper.getMainLooper()).post(Runnable { this.notifyDataSetChanged() })
     }
 
     // Holds the views for adding it to image and text

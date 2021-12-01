@@ -13,7 +13,6 @@ class FindLobbyActivity : AppCompatActivity() {
 
     var nsdHelper: NsdHelper = NsdHelper(this)
 
-    var servicesList: MutableList<NsdServiceInfo> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,26 +21,26 @@ class FindLobbyActivity : AppCompatActivity() {
         nsdHelper.discoverServices()
         nsdHelper.getServices()
 
+
+
         // getting the recyclerview by its id
         val recyclerview = findViewById<RecyclerView>(R.id.recycAvailableLobbies)
 
         // this creates a vertical layout Manager
         recyclerview.layoutManager = LinearLayoutManager(this)
 
-        // init servicesList
-        servicesList = nsdHelper.getServices()
 
-        if (servicesList != null) {
-
-            Log.d(TAG, "servicelist is not null")
-
-            Log.d(TAG, "servicelist: " + servicesList)
+        if (nsdHelper.servicesList != null) {
 
             // This will pass the ArrayList to our Adapter
             val adapter = lobbyAdapter(nsdHelper.servicesList)  //todo make this list dynamic
 
             // Setting the Adapter with the recyclerview
             recyclerview.adapter = adapter
+
+            //pass the adapter to the nsdHelper
+            //so it can update the list using the adapters using notifyDataSetChange() method in update()
+            nsdHelper.setRecycAdapter(adapter)
 
         } else {
 

@@ -29,6 +29,10 @@ class NsdHelper(var mContext: Context) {
     //public because it needs to be dynamic for the recycler view
     var servicesList: MutableList<NsdServiceInfo> = mutableListOf() //list of devices
 
+    //Recycler View
+    private var recycAdapter: lobbyAdapter? = null
+
+
 
     //Register Service meths
     fun initializeServerSocket(): Int {
@@ -162,10 +166,23 @@ class NsdHelper(var mContext: Context) {
 
                             Log.d(TAG, "broadcastedservicename = $service.serviceName")
 
+                            //todo can get rid of this i think
                             //todo should i use a setter method instead?
                             servicesList.add(    //store the service in the list
                                 service
                             )
+
+
+
+                            if (recycAdapter != null ){
+                                recycAdapter?.update()
+                                Log.d(TAG, "recycAdapter is updated")
+                            }else{
+                                Log.e(TAG, "recycAdapter is null")
+                            }
+
+
+
                         }
                     }
 
@@ -182,8 +199,25 @@ class NsdHelper(var mContext: Context) {
             // When the network service is no longer available.
             // Internal bookkeeping code goes here.
             Log.e(TAG, "service lost: $service")
-            servicesList.remove(service)
-            Log.e(TAG, "service removed from mutable serviceList")
+
+            //todo could improve this to be faster
+            //remove service from list
+            for(i in servicesList.indices){
+                if (servicesList[i].serviceName.equals(service.serviceName)){
+                    servicesList.removeAt(i)
+                }
+            }
+            Log.d(TAG, "service removed from nsd.services list")
+
+            //update the recycler view adapter
+            if (recycAdapter != null ){
+                recycAdapter?.update()
+                Log.d(TAG, "recycAdaper is updated")
+
+            }else{
+                Log.e(TAG, "recycAdapter is null")
+            }
+
         }
 
         override fun onDiscoveryStopped(serviceType: String) {
@@ -216,6 +250,10 @@ class NsdHelper(var mContext: Context) {
             }
             //discoveryListener = null
         }
+    }
+
+    fun setRecycAdapter(adapter: lobbyAdapter){
+        this.recycAdapter = adapter
     }
 
 }
