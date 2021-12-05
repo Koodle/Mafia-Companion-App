@@ -17,14 +17,14 @@ class MainActivity : AppCompatActivity() {
         var btnFind = findViewById(R.id.btnFind) as Button
         btnHost.setOnClickListener {
 
-            var intent = Intent(this@MainActivity, HostLobbyActivity::class.java)
+            var intent = Intent(this@MainActivity, HostServerActivity::class.java)
             startActivity(intent)
 
         }
 
         btnFind.setOnClickListener {
 
-            var intent = Intent(this@MainActivity, FindLobbyActivity::class.java)
+            var intent = Intent(this@MainActivity, FindServerActivity::class.java)
             startActivity(intent)
 
         }

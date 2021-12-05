@@ -3,13 +3,10 @@ package com.example.mafiacompanionapp
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.EditText
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 
-class HostLobbyActivity : AppCompatActivity() {
+class HostServerActivity : AppCompatActivity() {
 
     var serverName: String? = null
     var serverNameET: EditText? = null
@@ -17,7 +14,7 @@ class HostLobbyActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_host_lobby)
+        setContentView(R.layout.activity_host_server)
 
 
 

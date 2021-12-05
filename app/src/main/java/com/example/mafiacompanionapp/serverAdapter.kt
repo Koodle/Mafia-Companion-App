@@ -8,10 +8,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import android.os.Looper
-import android.util.Log
 
 
-class lobbyAdapter(private var mList: List<NsdServiceInfo>) : RecyclerView.Adapter<lobbyAdapter.ViewHolder>() {
+class serverAdapter(private var mList: List<NsdServiceInfo>) : RecyclerView.Adapter<serverAdapter.ViewHolder>() {
 
 
     // create new views
@@ -50,6 +49,6 @@ class lobbyAdapter(private var mList: List<NsdServiceInfo>) : RecyclerView.Adapt
 
     // Holds the views for adding it to image and text
     class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) {
-        val textView: TextView = itemView.findViewById(R.id.lobbyName)
+        val textView: TextView = itemView.findViewById(R.id.serverName)
     }
 }
