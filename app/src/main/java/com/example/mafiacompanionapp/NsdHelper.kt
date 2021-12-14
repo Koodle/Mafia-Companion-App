@@ -7,12 +7,14 @@ import android.os.Build
 import android.util.Log
 import java.net.InetAddress
 import java.net.ServerSocket
+import java.net.Socket
 
 /*class that contains all the code to implement NSD*/
 
 class NsdHelper(var mContext: Context) {
 
     //Register Service vars
+    lateinit var mServerSocket: ServerSocket
     private var localPort = -1
     private var mServiceName = "MafiaApp - " + Build.MANUFACTURER + " - " + Build.MODEL //todo could get the user to imput their name here or do it in the sockets
     private var mServiceType = "_mafia._tcp"
@@ -28,13 +30,13 @@ class NsdHelper(var mContext: Context) {
     var servicesList: MutableList<NsdServiceInfo> = mutableListOf() //list of devices
 
     //Recycler View
-    private var recycAdapter: serverAdapter? = null
+    private var recycAdapter: ServerAdapter? = null
 
     //Register Service meths
 
     fun initializeServerSocket(): Int {
         //initialize a server socket on the next available port
-        var mServerSocket = ServerSocket(0)
+        mServerSocket = ServerSocket(0)
         //store the chosen port
         localPort = mServerSocket.localPort
         return localPort
@@ -231,7 +233,7 @@ class NsdHelper(var mContext: Context) {
         }
     }
 
-    fun setRecycAdapter(adapter: serverAdapter){
+    fun setRecycAdapter(adapter: ServerAdapter){
         this.recycAdapter = adapter
     }
 

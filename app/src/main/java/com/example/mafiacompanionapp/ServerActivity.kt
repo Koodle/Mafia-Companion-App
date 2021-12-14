@@ -1,24 +1,54 @@
 package com.example.mafiacompanionapp
 
-import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.EditText
+import androidx.appcompat.app.AppCompatActivity
+import java.io.BufferedReader
+import java.io.InputStreamReader
+import java.io.PrintWriter
 
 class ServerActivity : AppCompatActivity() {
 
+    val TAG = "LOG: ServerActivity"
 
     var nsdHelper: NsdHelper = NsdHelper(this)
     var serverName: String? = null
-
-    //var serverName: String? = getIntent().getStringExtra("serverName")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_server)
         Log.d("debug - ServerActivity", "server activity")
 
+        setServerName()
+        startServer(serverName.toString())
+
+        //todo put this in server helper class after testing it wrks
+        var client = nsdHelper.mServerSocket.accept()
+        while (true){
+
+            //todo put this in threads
+
+            //todo send greeting msg to client
+            //get clients name
+            var br: BufferedReader = BufferedReader(InputStreamReader(client.getInputStream()))
+            var sb = StringBuilder()
+            var line = br.readLine()
+
+            while(line!=null){
+                sb.append(line)
+                line=br.readLine()
+            }
+            br.close()
+
+            Log.d(TAG,"Message received from the client :: $sb")
+
+            //send msg to client saying hello "name"
+            val out = PrintWriter(client.getOutputStream(), true)
+            out.println("Hello Client !!")
+        }
+    }
+
+    fun setServerName(){
         //get the serverName from HostLobbyIntent
         val extras = getIntent().getExtras()
         if (null != extras) {
@@ -31,18 +61,14 @@ class ServerActivity : AppCompatActivity() {
         }else{
             Log.d("debug - ServerActivity", "no extras")
         }
-
-        //set ServerName for NSD
-        nsdHelper.setServiceName(serverName.toString())
-        //Allocate Socket & Register Service
-        nsdHelper.registerService(nsdHelper.initializeServerSocket())
-
-
-
-
     }
 
-
+    fun startServer(serverName: String){
+        //set ServerName for NSD
+        nsdHelper.setServiceName(serverName)
+        //Allocate Socket & Register Service
+        nsdHelper.registerService(nsdHelper.initializeServerSocket())
+    }
 
 
 

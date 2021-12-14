@@ -8,23 +8,20 @@ import android.widget.EditText
 
 class HostServerActivity : AppCompatActivity() {
 
-    var serverName: String? = null
-    var serverNameET: EditText? = null
-
+    lateinit var serverName: String
+    lateinit var serverNameET: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_host_server)
 
+        createGameOnClick()
 
+    }
 
+    //To create the server
+    fun createGameOnClick(){
 
-        //get name of server
-        //var serverName = serverNameET.text.toString()
-
-
-
-        //To create the server
         var createGameBtn = findViewById<Button>(R.id.createServer).setOnClickListener {
 
             //init edit text
@@ -39,9 +36,6 @@ class HostServerActivity : AppCompatActivity() {
 
             //navigate to the Server/Lobby view and pass the server name
             startActivity(intent)
-
-
         }
-
     }
 }

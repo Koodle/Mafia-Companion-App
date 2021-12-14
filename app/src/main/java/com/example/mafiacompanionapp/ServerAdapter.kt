@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import android.os.Looper
 
 
-class serverAdapter(private var mList: List<NsdServiceInfo>) : RecyclerView.Adapter<serverAdapter.ViewHolder>() {
+class ServerAdapter(private var mList: List<NsdServiceInfo>) : RecyclerView.Adapter<ServerAdapter.ViewHolder>() {
 
 
     // create new views
