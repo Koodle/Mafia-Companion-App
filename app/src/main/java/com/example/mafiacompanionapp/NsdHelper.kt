@@ -63,11 +63,11 @@ class NsdHelper(var mContext: Context) {
                 // resolve a conflict, so update the name you initially requested
                 // with the name Android actually used
                 mServiceName = NsdServiceInfo.serviceName
-                //mServiceType = NsdServiceInfo.serviceType
+                Log.d("TAG", "service is registered" )
                 Log.d("TAG", "service name $mServiceName" )
                 Log.d("TAG", "service type $mServiceType")
-                Log.d("TAG", "port ${NsdServiceInfo.port}")
-                Log.d("TAG", "host ${NsdServiceInfo.host}")
+                Log.d("TAG", "service port ${NsdServiceInfo.port}")
+                Log.d("TAG", "service host ${NsdServiceInfo.host}")
             }
 
             override fun onRegistrationFailed(serviceInfo: NsdServiceInfo, errorCode: Int) {

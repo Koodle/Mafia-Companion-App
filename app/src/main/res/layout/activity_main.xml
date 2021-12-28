@@ -18,7 +18,7 @@
         android:textColor="@color/black"
         android:textSize="80dp" />
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal">
@@ -28,34 +28,20 @@
             android:id="@+id/btnHost"
             android:layout_width="109dp"
             android:layout_height="48dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginStart="76dp"
-            android:layout_marginTop="290dp"
-            android:layout_marginEnd="39dp"
-            android:layout_marginBottom="234dp"
-            android:layout_toStartOf="@+id/btnFind"
             android:background="@drawable/custom_button"
             android:fontFamily="@font/abril_fatface"
             android:text="Host"
             android:textSize="30dp" />
 
         <Button
-            android:id="@+id/btnFind"
-            android:layout_width="109dp"
-            android:layout_height="48dp"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginTop="290dp"
-            android:layout_marginEnd="75dp"
-            android:layout_marginBottom="234dp"
-            android:background="@drawable/custom_button"
-            android:fontFamily="@font/abril_fatface"
-            android:text="find"
-            android:textSize="30dp" />
-    </RelativeLayout>
+                android:id="@+id/btnFind"
+                android:layout_width="109dp"
+                android:layout_height="48dp"
+                android:background="@drawable/custom_button"
+                android:fontFamily="@font/abril_fatface"
+                android:text="find"
+                android:textSize="30dp"/>
+    </LinearLayout>
 
 
 
