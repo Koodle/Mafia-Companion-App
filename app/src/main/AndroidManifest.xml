@@ -13,10 +13,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MafiaCompanionApp">
         <activity
-            android:name=".FindLobbyActivity"
+            android:name=".FindServerActivity"
             android:exported="false" />
         <activity
-            android:name=".HostLobbyActivity"
+            android:name=".HostServerActivity"
             android:exported="false" />
         <activity
             android:name=".ServerActivity"

@@ -1,20 +1,20 @@
 package com.example.mafiacompanionapp
 
-import android.app.Service
 import android.content.Context
 import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
 import android.os.Build
 import android.util.Log
-import androidx.core.content.ContextCompat.getSystemService
 import java.net.InetAddress
 import java.net.ServerSocket
+import java.net.Socket
 
 /*class that contains all the code to implement NSD*/
 
 class NsdHelper(var mContext: Context) {
 
     //Register Service vars
+    lateinit var mServerSocket: ServerSocket
     private var localPort = -1
     private var mServiceName = "MafiaApp - " + Build.MANUFACTURER + " - " + Build.MODEL //todo could get the user to imput their name here or do it in the sockets
     private var mServiceType = "_mafia._tcp"
@@ -30,14 +30,13 @@ class NsdHelper(var mContext: Context) {
     var servicesList: MutableList<NsdServiceInfo> = mutableListOf() //list of devices
 
     //Recycler View
-    private var recycAdapter: lobbyAdapter? = null
-
-
+    private var recycAdapter: ServerAdapter? = null
 
     //Register Service meths
+
     fun initializeServerSocket(): Int {
         //initialize a server socket on the next available port
-        var mServerSocket = ServerSocket(0)
+        mServerSocket = ServerSocket(0)
         //store the chosen port
         localPort = mServerSocket.localPort
         return localPort
@@ -111,6 +110,7 @@ class NsdHelper(var mContext: Context) {
     }
 
     //Discover Services meths
+
     fun discoverServices(){
 
         nsdManager = (mContext?.getSystemService(Context.NSD_SERVICE) as NsdManager)
@@ -140,39 +140,20 @@ class NsdHelper(var mContext: Context) {
                 override fun onServiceResolved(serviceInfo: NsdServiceInfo?) {
                     Log.e(TAG, "Resolve Succeeded. $serviceInfo")
 
-//                    if (serviceInfo != null) {
-//                        if (serviceInfo.serviceName == mServiceName) {
-//                            Log.d(TAG, "Same IP.")
-//                            return
-//                        }
-//                    }
-//                    mService = serviceInfo
-//                    if (serviceInfo != null) {
-//                        port = serviceInfo.port
-//                    }
-//                    if (serviceInfo != null) {
-//                        host = serviceInfo.host
-//                    }
-
-
-
                     if (serviceInfo != null) {
 
                         //make sure the device is not finding its self
-                        if (serviceInfo.serviceName.equals(mServiceName)) {  //this should never happen since a device shouldnt be able to host and find at the same time
+                        if (serviceInfo.serviceName.equals(mServiceName)) {  //this should never be True since I have not coded the device to be able to host and find at the same time
                             Log.e(TAG, "found yourself")
 
                         }else if(serviceInfo.serviceType.contains("mafia._tcp")){
 
                             Log.d(TAG, "broadcastedservicename = $service.serviceName")
 
-                            //todo can get rid of this i think
-                            //todo should i use a setter method instead?
+                            //use .add to append to the list without creating a new list in memory
                             servicesList.add(    //store the service in the list
                                 service
                             )
-
-
 
                             if (recycAdapter != null ){
                                 recycAdapter?.update()
@@ -180,9 +161,6 @@ class NsdHelper(var mContext: Context) {
                             }else{
                                 Log.e(TAG, "recycAdapter is null")
                             }
-
-
-
                         }
                     }
 
@@ -255,7 +233,7 @@ class NsdHelper(var mContext: Context) {
         }
     }
 
-    fun setRecycAdapter(adapter: lobbyAdapter){
+    fun setRecycAdapter(adapter: ServerAdapter){
         this.recycAdapter = adapter
     }
 
