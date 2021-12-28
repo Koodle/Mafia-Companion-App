@@ -6,49 +6,52 @@ import androidx.appcompat.app.AppCompatActivity
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.io.PrintWriter
+import java.util.concurrent.Executor
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
+import kotlin.concurrent.thread
 
 class ServerActivity : AppCompatActivity() {
 
     val TAG = "LOG: ServerActivity"
 
     var nsdHelper: NsdHelper = NsdHelper(this)
-    var serverName: String? = null
+    var nsdName: String? = null //name of lobby
+
+    //store all client connections
+    var clients: MutableList<ServerHelper> = arrayListOf()
+    //execute the client threads
+    var pool: ExecutorService = Executors.newFixedThreadPool(10) //cannot have more than 10 clients connected
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_server)
         Log.d("debug - ServerActivity", "server activity")
 
-        setServerName()
-        startServer(serverName.toString())
+        //start NSD
+        setNsdName()
+        startNsd(nsdName.toString())
 
-        //todo put this in server helper class after testing it wrks
-        var client = nsdHelper.mServerSocket.accept()
-        while (true){
+        thread {
+            //todo fix this
+            while (true){
+                Log.d(TAG, "[SERVER] Waiting for client connection...")
+                var client = nsdHelper.mServerSocket.accept()
+                Log.d(TAG, "[SERVER] connected to client")
 
-            //todo put this in threads
-
-            //todo send greeting msg to client
-            //get clients name
-            var br: BufferedReader = BufferedReader(InputStreamReader(client.getInputStream()))
-            var sb = StringBuilder()
-            var line = br.readLine()
-
-            while(line!=null){
-                sb.append(line)
-                line=br.readLine()
+                //create client thread
+                var clientThread = ServerHelper(client)
+                //add it to list
+                clients.add(clientThread)
+                //run it
+                pool.execute(clientThread)
             }
-            br.close()
-
-            Log.d(TAG,"Message received from the client :: $sb")
-
-            //send msg to client saying hello "name"
-            val out = PrintWriter(client.getOutputStream(), true)
-            out.println("Hello Client !!")
         }
+
+
     }
 
-    fun setServerName(){
+    fun setNsdName(){
         //get the serverName from HostLobbyIntent
         val extras = getIntent().getExtras()
         if (null != extras) {
@@ -56,16 +59,16 @@ class ServerActivity : AppCompatActivity() {
             Log.d("debug - ServerActivity", "found extra")
 
             //set serviceName to be server Name
-            serverName = value.toString()
+            nsdName = value.toString()
 
         }else{
             Log.d("debug - ServerActivity", "no extras")
         }
     }
 
-    fun startServer(serverName: String){
+    fun startNsd(nsdName: String){
         //set ServerName for NSD
-        nsdHelper.setServiceName(serverName)
+        nsdHelper.setServiceName(nsdName)
         //Allocate Socket & Register Service
         nsdHelper.registerService(nsdHelper.initializeServerSocket())
     }

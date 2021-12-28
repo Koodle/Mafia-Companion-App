@@ -3,6 +3,7 @@ package com.example.mafiacompanionapp
 import android.os.Bundle
 import android.util.Log
 import android.widget.EditText
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -42,24 +43,28 @@ class FindServerActivity : AppCompatActivity() {
         }
 
         //todo join a server
-        val serverCard = findViewById(R.id.serverName) as EditText
-        serverCard.setOnClickListener {
-            //find the servers port/ip
-            for (service in nsdHelper.getServices()){
-                //get the services's ip adress & port
-                if(service.serviceName.equals(serverCard.text.toString())){
-                    //todo make connection to the server
-                    var clientSocket = Socket(service.host, service.port)
-                    Log.d(TAG, "connected to server on ${service.host} & ${service.port}")
-
-                    //todo send the server a message
-                    var br: BufferedReader = BufferedReader(InputStreamReader(clientSocket.getInputStream()))
-
-                    //todo navigate to the lobby screen
-
-                }
-            }
-        }
+//        val serverCard = findViewById(R.id.serverName) as TextView
+//        serverCard.setOnClickListener {
+//            //find the servers port/ip
+//            for (service in nsdHelper.getServices()){
+//                //get the services's ip adress & port
+//                if(service.serviceName.equals(serverCard.text.toString())){
+//                    //todo make connection to the server
+////                    var clientSocket = Socket(service.host, service.port)
+//                    var connectedServer = ClientHelper(service.host, service.port)
+//                    Log.d(TAG, "connected to server on ${service.host} & ${service.port}")
+//
+//
+//
+//                    //todo send the server a message
+//                    //var br: BufferedReader = BufferedReader(InputStreamReader(clientSocket.getInputStream()))
+//                    connectedServer.connect()
+//
+//                    //todo navigate to the lobby screen
+//
+//                }
+//            }
+//        }
             //call nsdHelper.getServices() to
             //search in that list for the serverName
 
