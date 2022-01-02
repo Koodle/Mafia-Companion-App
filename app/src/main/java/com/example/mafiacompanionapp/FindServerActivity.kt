@@ -2,16 +2,11 @@ package com.example.mafiacompanionapp
 
 import android.os.Bundle
 import android.util.Log
-import android.widget.EditText
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import java.io.BufferedReader
-import java.io.InputStreamReader
-import java.io.PrintWriter
-import java.net.Socket
-import kotlin.concurrent.thread
+import com.example.mafiacompanionapp.client.AdapterLobbyRecycView
+import com.example.mafiacompanionapp.server.NsdHelper
 
 class FindServerActivity : AppCompatActivity() {
 
@@ -32,7 +27,7 @@ class FindServerActivity : AppCompatActivity() {
         recyclerview.layoutManager = LinearLayoutManager(this)
         if (nsdHelper.servicesList != null) {
             // This will pass the ArrayList to our Adapter
-            val adapter = ServerAdapter(nsdHelper.servicesList)
+            val adapter = AdapterLobbyRecycView(nsdHelper.servicesList)
             // Setting the Adapter with the recyclerview
             recyclerview.adapter = adapter
             //pass the adapter to the nsdHelper

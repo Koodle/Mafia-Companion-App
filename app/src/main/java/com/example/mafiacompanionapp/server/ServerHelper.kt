@@ -1,4 +1,4 @@
-package com.example.mafiacompanionapp
+package com.example.mafiacompanionapp.server
 
 import android.util.Log
 import java.io.BufferedReader

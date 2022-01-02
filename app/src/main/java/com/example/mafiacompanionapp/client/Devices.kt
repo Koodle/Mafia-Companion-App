@@ -1,4 +1,4 @@
-package com.example.mafiacompanionapp
+package com.example.mafiacompanionapp.client
 
 import java.net.InetAddress
 

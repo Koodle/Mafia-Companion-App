@@ -1,13 +1,13 @@
-package com.example.mafiacompanionapp
+package com.example.mafiacompanionapp.server
 
 import android.content.Context
 import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
 import android.os.Build
 import android.util.Log
+import com.example.mafiacompanionapp.client.AdapterLobbyRecycView
 import java.net.InetAddress
 import java.net.ServerSocket
-import java.net.Socket
 
 /*class that contains all the code to implement NSD*/
 
@@ -30,7 +30,7 @@ class NsdHelper(var mContext: Context) {
     var servicesList: MutableList<NsdServiceInfo> = mutableListOf() //list of devices
 
     //Recycler View
-    private var recycAdapter: ServerAdapter? = null
+    private var recycAdapterLobbyRecycView: AdapterLobbyRecycView? = null
 
     //Register Service meths
 
@@ -155,8 +155,8 @@ class NsdHelper(var mContext: Context) {
                                 service
                             )
 
-                            if (recycAdapter != null ){
-                                recycAdapter?.update()
+                            if (recycAdapterLobbyRecycView != null ){
+                                recycAdapterLobbyRecycView?.update()
                                 Log.d(TAG, "recycAdapter is updated")
                             }else{
                                 Log.e(TAG, "recycAdapter is null")
@@ -191,8 +191,8 @@ class NsdHelper(var mContext: Context) {
             Log.d(TAG, "service removed from nsd.services list")
 
             //update the recycler view adapter
-            if (recycAdapter != null ){
-                recycAdapter?.update()
+            if (recycAdapterLobbyRecycView != null ){
+                recycAdapterLobbyRecycView?.update()
                 Log.d(TAG, "recycAdaper is updated")
 
             }else{
@@ -233,8 +233,8 @@ class NsdHelper(var mContext: Context) {
         }
     }
 
-    fun setRecycAdapter(adapter: ServerAdapter){
-        this.recycAdapter = adapter
+    fun setRecycAdapter(adapterLobbyRecycView: AdapterLobbyRecycView){
+        this.recycAdapterLobbyRecycView = adapterLobbyRecycView
     }
 
 }

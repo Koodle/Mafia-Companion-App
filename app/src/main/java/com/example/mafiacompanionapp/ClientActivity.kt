@@ -1,12 +1,8 @@
 package com.example.mafiacompanionapp
 
-import android.content.Context
-import android.net.nsd.NsdManager
-import android.net.nsd.NsdServiceInfo
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import java.net.InetAddress
+import com.example.mafiacompanionapp.server.NsdHelper
 
 class ClientActivity : AppCompatActivity() {
 

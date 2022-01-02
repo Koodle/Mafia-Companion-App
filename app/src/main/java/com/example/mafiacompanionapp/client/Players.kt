@@ -1,4 +1,4 @@
-package com.example.mafiacompanionapp
+package com.example.mafiacompanionapp.client
 
 /*could turn this into a players class to keep hold of the
 *each player should have:

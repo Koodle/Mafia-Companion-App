@@ -3,10 +3,8 @@ package com.example.mafiacompanionapp
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import java.io.BufferedReader
-import java.io.InputStreamReader
-import java.io.PrintWriter
-import java.util.concurrent.Executor
+import com.example.mafiacompanionapp.server.NsdHelper
+import com.example.mafiacompanionapp.server.ServerHelper
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import kotlin.concurrent.thread
@@ -29,6 +27,7 @@ class ServerActivity : AppCompatActivity() {
         Log.d("debug - ServerActivity", "server activity")
 
         //start NSD
+        //todo make this run before ServerSocket.Accept
         setNsdName()
         startNsd(nsdName.toString())
 

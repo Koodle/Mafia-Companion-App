@@ -1,4 +1,4 @@
-package com.example.mafiacompanionapp
+package com.example.mafiacompanionapp.client
 
 import android.net.nsd.NsdServiceInfo
 import android.os.Handler
@@ -8,9 +8,10 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import android.os.Looper
+import com.example.mafiacompanionapp.R
 
 
-class ServerAdapter(private var mList: List<NsdServiceInfo>) : RecyclerView.Adapter<ServerAdapter.ViewHolder>() {
+class AdapterLobbyRecycView(private var mList: List<NsdServiceInfo>) : RecyclerView.Adapter<AdapterLobbyRecycView.ViewHolder>() {
 
 
     // create new views
